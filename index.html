@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7eee8" />
+  <title>A Little Date for Us</title>
+  <style>
+    :root {
+      --ink: #28263a;
+      --muted: #777487;
+      --paper: #fffdfb;
+      --cream: #f7eee8;
+      --pink: #f3c9c7;
+      --coral: #dc8278;
+      --lilac: #d9d1ef;
+      --lavender: #eee9fa;
+      --green: #dce8d6;
+      --line: rgba(40, 38, 58, .10);
+      --shadow: 0 18px 50px rgba(67, 48, 65, .10);
+      --radius: 26px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%, rgba(243,201,199,.48), transparent 25rem),
+        radial-gradient(circle at 92% 18%, rgba(217,209,239,.55), transparent 25rem),
+        var(--cream);
+      font-family: ui-rounded, "SF Pro Rounded", "Avenir Next", Avenir, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button { cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none; }
+    .page { width: min(100% - 28px, 900px); margin: 0 auto; padding: 22px 0 54px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; margin: 2px 2px 18px; }
+    .brand { display:flex; align-items:center; gap:9px; font-size:12px; font-weight:850; letter-spacing:.13em; text-transform:uppercase; }
+    .brand-mark { display:grid; place-items:center; width:32px; height:32px; border-radius:12px; background:var(--ink); color:white; font-size:16px; }
+    .top-pill { color:#6d6274; background:rgba(255,255,255,.64); border:1px solid var(--line); padding:8px 12px; border-radius:99px; font-size:11px; font-weight:750; letter-spacing:.06em; }
+    .hero {
+      position:relative; overflow:hidden; min-height:465px; padding: clamp(26px, 6vw, 56px);
+      border-radius:34px; background:linear-gradient(135deg,#fffaf6 0%,#f8e7e2 54%,#ece7f7 100%);
+      box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.8);
+      display:flex; flex-direction:column; justify-content:center;
+    }
+    .hero:before, .hero:after { content:""; position:absolute; border-radius:50%; pointer-events:none; }
+    .hero:before { width:300px; height:300px; right:-74px; top:-92px; background:rgba(255,255,255,.43); }
+    .hero:after { width:220px; height:220px; right:100px; bottom:-150px; background:rgba(220,130,120,.13); }
+    .hero-inner { position:relative; z-index:1; max-width:610px; }
+    .eyebrow { display:inline-flex; align-items:center; gap:8px; color:#866b73; font-size:11px; font-weight:850; letter-spacing:.16em; text-transform:uppercase; }
+    .eyebrow .dot { width:7px; height:7px; border-radius:50%; background:var(--coral); box-shadow:0 0 0 5px rgba(220,130,120,.14); }
+    h1 { margin:18px 0 12px; font-family: Georgia, "Times New Roman", serif; font-size:clamp(48px, 9vw, 82px); font-weight:500; letter-spacing:-.055em; line-height:.98; }
+    h1 em { color:#c96f69; font-weight:500; }
+    .hero-copy { max-width:470px; color:#6f6878; font-size:15px; }
+    .hero-chips { display:flex; flex-wrap:wrap; gap:8px; margin:22px 0 25px; }
+    .chip { border:1px solid rgba(70,55,75,.12); background:rgba(255,255,255,.62); color:#62596b; border-radius:99px; padding:8px 12px; font-size:11px; font-weight:750; }
+    .btn-row { display:flex; flex-wrap:wrap; gap:10px; }
+    .btn { border:0; padding:13px 18px; border-radius:15px; font-size:13px; font-weight:850; transition:transform .18s ease, box-shadow .18s ease; }
+    .btn:hover { transform:translateY(-2px); }
+    .btn-primary { background:var(--ink); color:#fff; box-shadow:0 9px 18px rgba(40,38,58,.17); }
+    .btn-secondary { background:rgba(255,255,255,.74); color:var(--ink); border:1px solid var(--line); }
+    .hero-stamp { position:absolute; z-index:1; right:clamp(20px,5vw,56px); bottom:48px; width:116px; height:116px; transform:rotate(9deg); border:1px solid rgba(159,104,107,.35); border-radius:50%; display:grid; place-items:center; text-align:center; color:#aa6c70; font-family:Georgia,serif; font-size:16px; line-height:1.1; background:rgba(255,255,255,.28); }
+    .hero-stamp span { font-size:23px; display:block; }
+    section { margin-top:30px; }
+    .section-head { display:flex; justify-content:space-between; align-items:end; gap:16px; margin:0 4px 14px; }
+    .section-kicker { color:#a16f76; font-size:10px; letter-spacing:.16em; text-transform:uppercase; font-weight:900; }
+    h2 { margin:4px 0 0; font-family:Georgia,serif; font-size:clamp(27px,5vw,38px); font-weight:500; letter-spacing:-.035em; }
+    .section-note { color:var(--muted); font-size:12px; max-width:240px; text-align:right; }
+    .panel { background:rgba(255,253,251,.9); border:1px solid rgba(255,255,255,.9); border-radius:var(--radius); box-shadow:0 10px 30px rgba(67,48,65,.06); }
+    .choice-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:13px; }
+    .choice-card { position:relative; overflow:hidden; text-align:left; border:1.5px solid var(--line); border-radius:23px; background:rgba(255,255,255,.72); padding:18px; color:var(--ink); min-height:190px; transition:.2s ease; }
+    .choice-card:hover { transform:translateY(-3px); box-shadow:0 12px 25px rgba(67,48,65,.09); }
+    .choice-card.selected { border-color:#c97977; background:#fff7f4; box-shadow:0 0 0 3px rgba(220,130,120,.12); }
+    .choice-card .emoji { display:grid; place-items:center; width:49px; height:49px; border-radius:16px; background:var(--lavender); font-size:25px; margin-bottom:14px; }
+    .choice-card:nth-child(2) .emoji { background:#f8e2dd; }
+    .choice-card:nth-child(3) .emoji { background:#e4eee5; }
+    .choice-card strong { display:block; font-size:16px; margin-bottom:4px; }
+    .choice-card small { display:block; color:var(--muted); font-size:12px; }
+    .choice-card .tick { position:absolute; right:15px; top:15px; display:grid; place-items:center; width:23px; height:23px; border-radius:50%; border:1px solid var(--line); color:transparent; font-size:13px; }
+    .choice-card.selected .tick { background:var(--coral); color:white; border-color:var(--coral); }
+    .selected-note { padding:13px 16px; margin-top:12px; color:#665f70; font-size:12px; border-radius:16px; background:#f4f0fa; }
+    .timeline { padding:18px; }
+    .timeline-item { display:grid; grid-template-columns:86px 1fr; gap:14px; padding:15px 4px; border-bottom:1px solid var(--line); }
+    .timeline-item:last-child { border-bottom:0; }
+    .time { color:#c47772; font-size:12px; font-weight:900; letter-spacing:.03em; padding-top:2px; }
+    .timeline-item h3 { margin:0 0 4px; font-size:15px; }
+    .timeline-item p { margin:0; color:var(--muted); font-size:12px; }
+    .timeline-item .mini-tag { display:inline-block; margin-top:7px; padding:4px 8px; border-radius:99px; background:#f7eee8; color:#8b6a6d; font-size:10px; font-weight:800; }
+    .venue-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px; }
+    .venue { padding:18px; }
+    .venue-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .venue-icon { display:grid; place-items:center; width:42px; height:42px; border-radius:14px; background:#f7e2df; font-size:21px; }
+    .venue:nth-child(2) .venue-icon { background:#e8e3f6; }
+    .venue-label { color:#a16f76; font-size:10px; font-weight:900; letter-spacing:.12em; }
+    .venue h3 { margin:0 0 5px; font-size:17px; }
+    .venue p { min-height:49px; margin:0 0 13px; color:var(--muted); font-size:11px; }
+    .venue a { display:inline-flex; text-decoration:none; color:#80606a; font-size:11px; font-weight:850; border-bottom:1px solid #d5a5a2; padding-bottom:2px; }
+    .budget { padding:20px; display:grid; grid-template-columns:1fr auto; gap:16px; align-items:center; background:linear-gradient(120deg,#fffdfb,#f0ecf9); }
+    .budget h3 { margin:0 0 5px; font-family:Georgia,serif; font-size:25px; font-weight:500; }
+    .budget p { margin:0; max-width:510px; color:var(--muted); font-size:11px; }
+    .budget-number { text-align:right; white-space:nowrap; }
+    .budget-number strong { display:block; color:#bd716d; font-size:25px; letter-spacing:-.04em; }
+    .budget-number span { color:var(--muted); font-size:10px; }
+    .budget-breakdown { margin-top:12px; display:grid; grid-template-columns:repeat(4,1fr); gap:7px; }
+    .budget-chip { background:rgba(255,255,255,.72); border:1px solid var(--line); border-radius:13px; padding:10px; }
+    .budget-chip span { display:block; color:var(--muted); font-size:10px; }
+    .budget-chip strong { display:block; margin-top:3px; font-size:12px; }
+    .game-box { padding:19px; }
+    .game-options { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .game-option { padding:9px 12px; border-radius:99px; border:1px solid var(--line); background:white; color:#6b6473; font-size:11px; font-weight:800; }
+    .game-option.active { color:white; background:var(--ink); border-color:var(--ink); }
+    .game-description { margin:11px 0 0; color:var(--muted); font-size:12px; min-height:18px; }
+    .reply { padding:23px; text-align:center; background:linear-gradient(135deg,#f7e6e1,#f0ecfa); }
+    .reply .heart { font-size:30px; }
+    .reply h2 { margin:5px 0 8px; }
+    .reply p { max-width:440px; margin:0 auto 17px; color:#70697a; font-size:12px; }
+    .reply-actions { display:flex; justify-content:center; flex-wrap:wrap; gap:9px; }
+    .reply-actions .btn { min-width:130px; }
+    .reply-note { margin-top:13px; color:#786f80; font-size:10px; }
+    .footer { text-align:center; padding:25px 10px 0; color:#968a98; font-family:Georgia,serif; font-size:13px; }
+    .toast { position:fixed; left:50%; bottom:18px; transform:translate(-50%,20px); opacity:0; pointer-events:none; background:var(--ink); color:white; border-radius:99px; padding:11px 16px; font-size:12px; box-shadow:var(--shadow); transition:.25s; z-index:10; width:max-content; max-width:calc(100% - 30px); text-align:center; }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+    .modal-backdrop { position:fixed; inset:0; z-index:20; display:none; place-items:center; padding:20px; background:rgba(30,27,39,.46); backdrop-filter:blur(7px); }
+    .modal-backdrop.open { display:grid; }
+    .modal { width:min(100%,430px); padding:27px; border-radius:27px; text-align:center; background:#fffaf7; box-shadow:0 25px 80px rgba(0,0,0,.2); animation:pop .25s ease; }
+    @keyframes pop { from {opacity:0; transform:scale(.92) translateY(10px)} to {opacity:1; transform:scale(1) translateY(0)} }
+    .modal .big-heart { font-size:43px; }
+    .modal h2 { font-size:33px; margin:5px 0 8px; }
+    .modal p { color:var(--muted); font-size:13px; }
+    .modal .btn { margin-top:8px; }
+    .confetti { position:fixed; top:-15px; z-index:30; width:8px; height:13px; border-radius:3px; animation:fall 2.8s linear forwards; pointer-events:none; }
+    @keyframes fall { to { transform:translateY(110vh) rotate(760deg); opacity:.1; } }
+    @media (max-width:620px) {
+      .page { width:min(100% - 20px, 900px); padding-top:12px; }
+      .hero { min-height:500px; border-radius:27px; }
+      .hero-stamp { width:86px; height:86px; right:20px; bottom:20px; font-size:12px; }
+      .hero-stamp span { font-size:18px; }
+      .hero-inner { padding-bottom:55px; }
+      .choice-grid, .venue-grid { grid-template-columns:1fr 1fr; gap:9px; }
+      .choice-card { min-height:180px; padding:14px; }
+      .choice-card strong { font-size:14px; }
+      .choice-card small { font-size:11px; }
+      .venue { padding:14px; }
+      .venue h3 { font-size:14px; }
+      .venue p { min-height:62px; }
+      .timeline { padding:12px; }
+      .timeline-item { grid-template-columns:70px 1fr; gap:9px; }
+      .budget { grid-template-columns:1fr; }
+      .budget-number { text-align:left; }
+      .budget-breakdown { grid-template-columns:1fr 1fr; }
+      .section-head { align-items:start; flex-direction:column; gap:5px; }
+      .section-note { text-align:left; }
+    }
+    @media (max-width:370px) { .choice-grid, .venue-grid { grid-template-columns:1fr; } }
+
+    /* Personal invitation upgrade */
+    .hero-personal-line { display:inline-flex; align-items:center; gap:7px; margin-top:6px; color:#9a6a73; font-family:Georgia,serif; font-style:italic; font-size:18px; }
+    .personalize { padding:20px; }
+    .personalize-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    .field.full { grid-column:1/-1; }
+    .field label { color:#817687; font-size:11px; font-weight:850; letter-spacing:.04em; }
+    .field input, .field textarea { width:100%; border:1px solid rgba(40,38,58,.13); border-radius:13px; padding:12px 13px; color:var(--ink); background:#fff; outline:none; font-size:13px; }
+    .field input:focus, .field textarea:focus { border-color:#c97977; box-shadow:0 0 0 3px rgba(220,130,120,.12); }
+    .field textarea { min-height:74px; resize:vertical; }
+    .photo-row { display:grid; grid-template-columns:112px 1fr; align-items:center; gap:14px; }
+    .photo-preview { width:112px; height:112px; overflow:hidden; border-radius:23px; border:1px dashed #d3b2b6; background:linear-gradient(135deg,#f7e6e1,#ece7f7); display:grid; place-items:center; color:#a5767d; font-family:Georgia,serif; font-size:34px; }
+    .photo-preview img { width:100%; height:100%; object-fit:cover; display:none; }
+    .photo-preview.has-image img { display:block; }
+    .photo-preview.has-image .photo-placeholder { display:none; }
+    .file-input { display:block; width:100%; margin-top:7px; font-size:11px; color:var(--muted); }
+    .personalize-actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:16px; }
+    .personalize-help { color:var(--muted); font-size:11px; margin:12px 0 0; }
+    .surprise-photo { width:112px; height:112px; margin:0 auto 12px; border-radius:28px; overflow:hidden; background:linear-gradient(135deg,#f7e6e1,#ece7f7); display:none; border:4px solid white; box-shadow:0 8px 25px rgba(67,48,65,.14); }
+    .surprise-photo.visible { display:block; }
+    .surprise-photo img { width:100%; height:100%; object-fit:cover; }
+    .modal .surprise-note { padding:12px 14px; background:#f8f0f1; border-radius:15px; color:#80636d; font-family:Georgia,serif; font-size:14px; }
+    .love-floater { position:fixed; z-index:29; bottom:-35px; pointer-events:none; font-size:20px; animation:floatLove 3.4s ease-out forwards; filter:drop-shadow(0 4px 7px rgba(201,111,105,.18)); }
+    @keyframes floatLove { 0% { transform:translateY(0) rotate(0deg) scale(.7); opacity:0; } 15% {opacity:1;} 100% { transform:translateY(-110vh) rotate(28deg) scale(1.25); opacity:0; } }
+    .tiny-note { color:#9b8795; font-size:10px; margin-top:8px; }
+    @media (max-width:620px) {
+      .personalize { padding:15px; }
+      .personalize-grid { grid-template-columns:1fr; }
+      .field.full { grid-column:auto; }
+      .photo-row { grid-template-columns:92px 1fr; }
+      .photo-preview { width:92px; height:92px; border-radius:19px; }
+      .hero-personal-line { font-size:16px; }
+    }
+
+  
+    .recipient-memory { padding: 24px 18px 8px; }
+    .recipient-memory-inner { max-width: 760px; margin: 0 auto; padding: 22px; border: 1px solid rgba(190,145,150,.28); border-radius: 22px; background: linear-gradient(135deg, rgba(255,247,244,.96), rgba(247,242,255,.96)); box-shadow: 0 14px 34px rgba(100,72,80,.07); text-align: center; }
+    .recipient-memory-kicker { color: #a47780; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-weight: 700; }
+    .recipient-memory h2 { margin: 9px 0 7px; color: #614950; font-family: Georgia,serif; font-size: clamp(24px,5vw,34px); font-weight: 500; }
+    .recipient-memory p { max-width: 520px; margin: 0 auto; color: #795f65; line-height: 1.7; font-size: 14px; white-space: pre-wrap; }
+    .recipient-memory img { display: block; width: min(100%, 420px); max-height: 360px; object-fit: cover; margin: 16px auto 0; border-radius: 16px; box-shadow: 0 8px 24px rgba(75,50,55,.12); }
+    .recipient-memory-from { margin-top: 12px !important; font-family: Georgia,serif; font-style: italic; }
+
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <div class="brand"><span class="brand-mark">♡</span> little date studio</div>
+      <div class="top-pill">A DATE PROPOSAL · 01</div>
+    </div>
+
+    <header class="hero" id="home">
+      <div class="hero-inner">
+        <div class="eyebrow"><span class="dot"></span> a little plan for us</div>
+        <h1>Let's make<br><em>a memory.</em></h1>
+        <div class="hero-personal-line" id="heroPersonalLine">for my favorite person ♡</div>
+        <p class="hero-copy">Aku punya ide buat quality time kita. Pilih aktivitas di Hitauchi, lalu lanjut main board game. Scroll dulu, terus pilih yang paling kamu suka ♡</p>
+        <div class="hero-chips">
+          <span class="chip">☁ afternoon start</span>
+          <span class="chip">🎨 creative / 🎬 movie date</span>
+          <span class="chip">🎲 board game night</span>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="document.getElementById('activities').scrollIntoView({behavior:'smooth'})">Lihat rencananya ↓</button>
+          <button class="btn btn-secondary" onclick="showToast('PS: aku yang traktir? kita lihat nanti hehe')">Ada pesan kecil ♡</button>
+        </div>
+      </div>
+      <div class="hero-stamp">quality<br>time<span>♡</span>together</div>
+    </header>
+
+    <section id="personalize">
+      <div class="section-head">
+        <div><div class="section-kicker">01 / made for us</div><h2>Make this invite yours</h2></div>
+        <div class="section-note">Isi nama dan foto kalian, lalu download versi personal untuk dikirim.</div>
+      </div>
+      <div class="panel personalize">
+        <div class="personalize-grid">
+          <div class="field">
+            <label for="yourName">NAMA KAMU</label>
+            <input id="yourName" type="text" maxlength="32" placeholder="Contoh: A"
+              autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="partnerName">NAMA DIA / PANGGILAN</label>
+            <input id="partnerName" type="text" maxlength="32" placeholder="Contoh: Sayang"
+              autocomplete="off" />
+          </div>
+          <div class="field full">
+            <label for="personalMessage">PESAN KECIL DARI KAMU</label>
+            <textarea id="personalMessage" maxlength="180" placeholder="Contoh: Aku pengin punya satu hari yang isinya cerita dan ketawa bareng kamu."></textarea>
+          </div>
+          <div class="field full">
+            <label>FOTO KALIAN (OPSIONAL)</label>
+            <div class="photo-row">
+              <div class="photo-preview" id="photoPreview"><span class="photo-placeholder">♡</span><img id="photoPreviewImg" alt="Preview foto kalian" /></div>
+              <div>
+                <strong style="font-size:13px">Tambahkan foto couple</strong>
+                <p style="font-size:11px;color:var(--muted);margin:4px 0 0">Foto akan masuk ke file undangan personal yang kamu download. Pilih foto yang tersimpan di perangkatmu.</p>
+                <input class="file-input" id="photoInput" type="file" accept="image/*" />
+                <button class="btn btn-secondary" type="button" style="padding:8px 11px;margin-top:5px;font-size:11px" onclick="removePhoto()">Hapus foto</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="personalize-actions">
+          <button class="btn btn-primary" type="button" onclick="downloadPersonalizedInvite()">Download versi personal ↓</button>
+          <button class="btn btn-secondary" type="button" onclick="resetPersonalization()">Reset</button>
+        </div>
+        <p class="personalize-help">Tips: isi nama dan foto dulu, lalu download. Kirim file hasil download ke dia lewat WhatsApp sebagai dokumen. Foto akan tersimpan di dalam file HTML.</p>
+      </div>
+    </section>
+
+    <section id="activities">
+      <div class="section-head">
+        <div><div class="section-kicker">02 / you choose</div><h2>Our creative stop</h2></div>
+        <div class="section-note">Pilih aktivitas yang paling pengin kamu coba.</div>
+      </div>
+      <div class="choice-grid">
+        <button class="choice-card selected" data-activity="clay" onclick="chooseActivity('clay')" aria-pressed="true">
+          <span class="tick">✓</span><span class="emoji">🪴</span>
+          <strong>Clay date</strong>
+          <small>Bikin dan bentuk sesuatu bareng. Bisa jadi keepsake kecil dari date kita.</small>
+        </button>
+        <button class="choice-card" data-activity="painting" onclick="chooseActivity('painting')" aria-pressed="false">
+          <span class="tick">✓</span><span class="emoji">🎨</span>
+          <strong>Painting date</strong>
+          <small>Paint, ngobrol, dan lihat siapa yang paling artistik. No judgment kalau abstrak.</small>
+        </button>
+        <button class="choice-card" data-activity="cinema" onclick="chooseActivity('cinema')" aria-pressed="false">
+          <span class="tick">✓</span><span class="emoji">🎬</span>
+          <strong>Cinemachi date</strong>
+          <small>Nonton private movie berdua selama 2 jam. Popcorn dan iced tea termasuk.</small>
+        </button>
+      </div>
+      <div class="selected-note" id="activityNote">Pilihan sekarang: Clay date. Kita bikin karya kecil yang bisa dibawa pulang.</div>
+      <div class="selected-note" style="background:#edf3eb;margin-top:9px">
+        <strong>Movie option at Hitauchi:</strong> Cinemachi adalah private cinema untuk 2 orang, durasi 2 jam, mulai Rp175.000 per room. Sudah termasuk unlimited snacks dan 1 pitcher iced tea. Konfirmasi pilihan film dan ketersediaan slot sebelum booking.
+        <br><a href="https://www.hitauchi.com/service-page/cinemachi-studio-2" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;color:#526b56;font-weight:850">Lihat detail & booking Cinemachi ↗</a>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><div class="section-kicker">03 / the plan</div><h2>Our little itinerary</h2></div>
+        <div class="section-note">Start sekitar jam 15.00. Jam bisa menyesuaikan kondisi jalan.</div>
+      </div>
+      <div class="panel timeline">
+        <div class="timeline-item">
+          <div class="time">15.00</div>
+          <div><h3>Pick-up & let's go</h3><p>Berangkat santai dan fokus di jalan. Kita mulai quality time setelah sampai.</p><span class="mini-tag">the journey starts</span></div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">16.00–18.00</div>
+          <div><h3 id="hitauchiTimelineTitle">Hitauchi Cafe</h3><p id="hitauchiTimelineText">Creative session pilihan kamu. Lanjut foto-foto dan pesan minuman.</p><span class="mini-tag" id="hitauchiTimelineTag">🎨 create something</span></div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">18.00</div>
+          <div><h3>Next stop, Lebak Bulus</h3><p>Selesai dari Hitauchi, lanjut ke Papan Hobbies. Waktu perjalanan mengikuti traffic.</p><span class="mini-tag">take it easy</span></div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">±18.45</div>
+          <div><h3>Papan Hobbies</h3><p>Pilih board game, saling adu strategi, dan cari tahu siapa yang paling kompetitif.</p><span class="mini-tag">🎲 game time</span></div>
+        </div>
+        <div class="timeline-item">
+          <div class="time">20.30</div>
+          <div><h3>Dinner & quality time</h3><p>Makan, ngobrol, lalu pulang dengan cerita baru.</p><span class="mini-tag">end the day happy</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><div class="section-kicker">04 / our stops</div><h2>Two places, one date</h2></div>
+      </div>
+      <div class="venue-grid">
+        <article class="panel venue">
+          <div class="venue-top"><span class="venue-icon">☕</span><span class="venue-label">STOP 01</span></div>
+          <h3>Hitauchi Cafe</h3>
+          <p>Jl. Pejaten Barat Raya No. 30, Jakarta Selatan. Ada pilihan creative activity dan Cinemachi, private cinema untuk 2 orang.</p>
+          <a href="https://www.google.com/maps/search/?api=1&query=Hitauchi+Cafe+Jl+Pejaten+Barat+Raya+No+30+Jakarta+Selatan" target="_blank" rel="noopener">Buka Google Maps ↗</a>
+          <br><a href="https://linktr.ee/hitauchi.jkt" target="_blank" rel="noopener" style="margin-top:10px">Menu & info cafe ↗</a>
+          <br><a href="https://www.hitauchi.com/service-page/cinemachi-studio-2" target="_blank" rel="noopener" style="margin-top:10px">Info & booking private cinema ↗</a>
+        </article>
+        <article class="panel venue">
+          <div class="venue-top"><span class="venue-icon">🎲</span><span class="venue-label">STOP 02</span></div>
+          <h3>Papan Hobbies</h3>
+          <p>Jl. Pertanian Raya No. 53, Lebak Bulus. Board game cafe dengan banyak pilihan permainan.</p>
+          <a href="https://www.google.com/maps/search/?api=1&query=Papan+Hobbies+Jl+Pertanian+Raya+No+53+Lebak+Bulus+Jakarta" target="_blank" rel="noopener">Buka Google Maps ↗</a>
+          <br><a href="https://www.instagram.com/papanhobbies/" target="_blank" rel="noopener" style="margin-top:10px">Instagram Papan Hobbies ↗</a>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><div class="section-kicker">05 / budget check</div><h2>Keep it simple</h2></div>
+      </div>
+      <div class="panel budget">
+        <div>
+          <h3>Target budget</h3>
+          <p>Perkiraan untuk satu orang. Harga aktivitas, makanan, dan biaya main dapat berubah. Kita cek lagi sebelum berangkat ya.</p>
+        </div>
+        <div class="budget-number"><strong id="budgetTotal">Rp205–275K</strong><span>per person · estimate</span></div>
+      </div>
+      <div class="budget-breakdown">
+        <div class="budget-chip"><span id="budgetActivityLabel">Creative activity</span><strong id="budgetActivityValue">Rp75–100K</strong></div>
+        <div class="budget-chip"><span id="budgetSnackLabel">Drink / snack</span><strong id="budgetSnackValue">Rp30–50K</strong></div>
+        <div class="budget-chip"><span>Board game</span><strong>± Rp50K</strong></div>
+        <div class="budget-chip"><span>Dinner</span><strong>Rp50–75K</strong></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><div class="section-kicker">06 / game mood</div><h2>What should we play?</h2></div>
+        <div class="section-note">Pilih mood game buat nanti.</div>
+      </div>
+      <div class="panel game-box">
+        <div class="game-options">
+          <button class="game-option active" data-game="easy" onclick="chooseGame('easy')">😂 Easy & funny</button>
+          <button class="game-option" data-game="team" onclick="chooseGame('team')">🤝 Teamwork</button>
+          <button class="game-option" data-game="strategy" onclick="chooseGame('strategy')">🧠 Strategy mode</button>
+        </div>
+        <p class="game-description" id="gameDescription">Kita pilih game ringan yang bikin banyak ketawa dan nggak perlu mikir terlalu keras.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><div class="section-kicker">07 / your answer</div><h2>So, how about it?</h2></div>
+      </div>
+      <div class="panel reply">
+        <div class="heart">💌</div>
+        <h2>Will you go on this date with me?</h2>
+        <p>Pilih jawaban kamu. Nanti bisa langsung share pilihanmu lewat WhatsApp.</p>
+        <div class="reply-actions">
+          <button class="btn btn-primary" onclick="respond('GAS! Aku mau date ini 💗')">GASSS! 💗</button>
+          <button class="btn btn-secondary" onclick="respond('Aku mau pilih tanggal lain 🗓️')">Pilih tanggal lain</button>
+          <button class="btn btn-secondary" onclick="respond('Aku mau revisi sedikit hehe ✨')">Revisi dikit</button>
+        </div>
+        <div class="reply-note">No pressure. Yang penting quality time bareng kamu.</div>
+      </div>
+    </section>
+
+    <div class="footer">made with a little thought & a lot of ♡</div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="big-heart" id="modalEmoji">💗</div>
+      <div class="surprise-photo" id="surprisePhoto"><img id="surprisePhotoImg" alt="Foto kalian" /></div>
+      <h2 id="modalTitle">It's a date!</h2>
+      <p id="modalText">Pilihan kamu sudah siap dikirim.</p>
+      <div class="surprise-note" id="surpriseNote" style="display:none"></div>
+      <button class="btn btn-primary" onclick="shareAnswer()">Kirim jawaban via WhatsApp ↗</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Tutup dulu</button>
+    </div>
+  </div>
+
+  <script id="embedded-personalization" type="application/json">{"yourName":"","partnerName":"","personalMessage":"","photoData":""}</script>
+  <script>
+    let selectedActivity = 'clay';
+    let selectedGame = 'easy';
+    let currentReply = 'GAS! Aku mau date ini 💗';
+    let couplePhotoData = '';
+    const activityCopy = {
+      clay: 'Pilihan sekarang: Clay date. Kita bikin karya kecil yang bisa dibawa pulang.',
+      painting: 'Pilihan sekarang: Painting date. Kita bikin lukisan masing-masing, terus pilih yang paling absurd.',
+      cinema: 'Pilihan sekarang: Cinemachi. Private movie untuk 2 orang selama 2 jam, mulai Rp175.000 per room. Unlimited snacks dan 1 pitcher iced tea sudah termasuk. Cek pilihan film dan slot saat booking.'
+    };
+    const activityNames = { clay: 'Clay date', painting: 'Painting date', cinema: 'Cinemachi private movie' };
+    const gameCopy = {
+      easy: 'Kita pilih game ringan yang bikin banyak ketawa dan nggak perlu mikir terlalu keras.',
+      team: 'Kita pilih game co-op. Satu tim, satu tujuan. Jangan saling menyalahkan kalau kalah ya.',
+      strategy: 'Kita pilih game strategi. Siap-siap adu taktik dan sedikit adu gengsi.'
+    };
+
+    function getPersonalData() {
+      return {
+        yourName: document.getElementById('yourName').value.trim().slice(0, 32),
+        partnerName: document.getElementById('partnerName').value.trim().slice(0, 32),
+        personalMessage: document.getElementById('personalMessage').value.trim().slice(0, 180),
+        photoData: couplePhotoData
+      };
+    }
+    function updatePersonalization() {
+      const data = getPersonalData();
+      const target = data.partnerName || 'my favorite person';
+      const from = data.yourName || 'someone who cares about you';
+      document.getElementById('heroPersonalLine').textContent = `for ${target} ♡`;
+      document.title = `A Little Date for ${target}`;
+      const preview = document.getElementById('photoPreview');
+      const previewImg = document.getElementById('photoPreviewImg');
+      if (data.photoData) {
+        previewImg.src = data.photoData;
+        preview.classList.add('has-image');
+      } else {
+        previewImg.removeAttribute('src');
+        preview.classList.remove('has-image');
+      }
+      const surprisePhoto = document.getElementById('surprisePhoto');
+      const surprisePhotoImg = document.getElementById('surprisePhotoImg');
+      if (data.photoData) {
+        surprisePhotoImg.src = data.photoData;
+        surprisePhoto.classList.add('visible');
+      } else {
+        surprisePhotoImg.removeAttribute('src');
+        surprisePhoto.classList.remove('visible');
+      }
+      const note = document.getElementById('surpriseNote');
+      note.textContent = data.personalMessage || `Dari ${from}, khusus buat ${target}. Aku nggak sabar quality time bareng kamu. ♡`;
+      return data;
+    }
+    function loadEmbeddedPersonalization() {
+      try {
+        const raw = document.getElementById('embedded-personalization').textContent;
+        const data = JSON.parse(raw || '{}');
+        document.getElementById('yourName').value = data.yourName || '';
+        document.getElementById('partnerName').value = data.partnerName || '';
+        document.getElementById('personalMessage').value = data.personalMessage || '';
+        couplePhotoData = data.photoData || '';
+      } catch (error) {
+        console.warn('Personalization data could not be loaded.', error);
+      }
+      updatePersonalization();
+    }
+    ['yourName', 'partnerName', 'personalMessage'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updatePersonalization);
+    });
+    document.getElementById('photoInput').addEventListener('change', event => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showToast('Pilih file gambar ya.');
+        event.target.value = '';
+        return;
+      }
+      if (file.size > 12 * 1024 * 1024) {
+        showToast('Ukuran foto maksimal 12 MB.');
+        event.target.value = '';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const maxSide = 1400;
+          const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          couplePhotoData = canvas.toDataURL('image/jpeg', 0.82);
+          updatePersonalization();
+          showToast('Foto masuk! Download versi personal untuk menyimpannya.');
+        };
+        img.onerror = () => showToast('Foto tidak bisa dibaca. Coba pilih foto lain.');
+        img.src = reader.result;
+      };
+      reader.onerror = () => showToast('Gagal membaca foto. Coba lagi.');
+      reader.readAsDataURL(file);
+    });
+    function removePhoto() {
+      couplePhotoData = '';
+      document.getElementById('photoInput').value = '';
+      updatePersonalization();
+      showToast('Foto dihapus.');
+    }
+    function resetPersonalization() {
+      document.getElementById('yourName').value = '';
+      document.getElementById('partnerName').value = '';
+      document.getElementById('personalMessage').value = '';
+      couplePhotoData = '';
+      document.getElementById('photoInput').value = '';
+      updatePersonalization();
+      showToast('Personalisasi di-reset.');
+    }
+    function downloadPersonalizedInvite() {
+      const data = getPersonalData();
+      if (!data.partnerName && !data.yourName && !data.personalMessage && !data.photoData) {
+        showToast('Isi nama atau pesan, atau tambahkan foto dulu ya.');
+        return;
+      }
+      const clone = document.documentElement.cloneNode(true);
+      const embedded = clone.querySelector('#embedded-personalization');
+      const safeJson = JSON.stringify(data).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
+      embedded.textContent = safeJson;
+
+      // Recipient copy: hide the editor and show a ready-to-open personal note.
+      const editorSection = clone.querySelector('#personalize');
+      if (editorSection) editorSection.style.display = 'none';
+      const recipientCard = document.createElement('section');
+      recipientCard.className = 'recipient-memory';
+      const recipientInner = document.createElement('div');
+      recipientInner.className = 'recipient-memory-inner';
+      const kicker = document.createElement('div');
+      kicker.className = 'recipient-memory-kicker';
+      kicker.textContent = 'A little note for you ♡';
+      const heading = document.createElement('h2');
+      heading.textContent = data.partnerName ? `For ${data.partnerName} ♡` : 'A little note for you ♡';
+      const note = document.createElement('p');
+      note.textContent = data.personalMessage || `Dari ${data.yourName || 'aku'}, khusus buat ${data.partnerName || 'kamu'}. Aku nggak sabar quality time bareng kamu. ♡`;
+      recipientInner.append(kicker, heading);
+      if (data.photoData) {
+        const photo = document.createElement('img');
+        photo.src = data.photoData;
+        photo.alt = 'Foto kalian berdua';
+        recipientInner.appendChild(photo);
+      }
+      recipientInner.appendChild(note);
+      const from = document.createElement('p');
+      from.className = 'recipient-memory-from';
+      from.textContent = `With love, ${data.yourName || 'aku'} ♡`;
+      recipientInner.appendChild(from);
+      recipientCard.appendChild(recipientInner);
+      const hero = clone.querySelector('header.hero');
+      if (hero) hero.insertAdjacentElement('afterend', recipientCard);
+
+      const html = '<!doctype html>\n' + clone.outerHTML;
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const base = (data.partnerName || 'our-date').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'our-date';
+      a.href = url;
+      a.download = `date-invitation-${base}.html`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      showToast('File undangan personal siap dikirim. Versi ini tidak menampilkan editor lagi.');
+    }
+
+    function chooseActivity(value) {
+      selectedActivity = value;
+      document.querySelectorAll('.choice-card').forEach(card => {
+        const active = card.dataset.activity === value;
+        card.classList.toggle('selected', active);
+        card.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      document.getElementById('activityNote').textContent = activityCopy[value];
+      const cinema = value === 'cinema';
+      document.getElementById('hitauchiTimelineTitle').textContent = cinema ? 'Cinemachi private movie' : 'Hitauchi Cafe';
+      document.getElementById('hitauchiTimelineText').textContent = cinema
+        ? 'Private movie session selama 2 jam untuk berdua. Unlimited snacks dan 1 pitcher iced tea termasuk dalam booking.'
+        : value === 'clay'
+          ? 'Clay session pilihan kamu. Bentuk dan hias karya kecil, lalu foto-foto sebelum lanjut.'
+          : 'Painting session pilihan kamu. Paint bareng, ngobrol, dan foto hasil karya sebelum lanjut.';
+      document.getElementById('hitauchiTimelineTag').textContent = cinema ? '🎬 2-hour private cinema' : value === 'clay' ? '🪴 make a keepsake' : '🎨 create something';
+      document.getElementById('budgetActivityLabel').textContent = cinema ? 'Cinemachi room ÷ 2' : 'Creative activity';
+      document.getElementById('budgetActivityValue').textContent = cinema ? 'Rp87,5K/orang' : 'Rp75–100K';
+      document.getElementById('budgetSnackLabel').textContent = cinema ? 'Unlimited snacks + iced tea' : 'Drink / snack';
+      document.getElementById('budgetSnackValue').textContent = cinema ? 'Included' : 'Rp30–50K';
+      document.getElementById('budgetTotal').textContent = cinema ? 'Rp188–213K' : 'Rp205–275K';
+    }
+    function chooseGame(value) {
+      selectedGame = value;
+      document.querySelectorAll('.game-option').forEach(btn => btn.classList.toggle('active', btn.dataset.game === value));
+      document.getElementById('gameDescription').textContent = gameCopy[value];
+    }
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+    function respond(reply) {
+      currentReply = reply;
+      const data = updatePersonalization();
+      const activity = activityNames[selectedActivity];
+      const game = selectedGame === 'easy' ? 'Easy & funny' : selectedGame === 'team' ? 'Teamwork' : 'Strategy mode';
+      const target = data.partnerName || 'pretty girl';
+      document.getElementById('modalText').textContent = reply.startsWith('GAS')
+        ? `${target}, kamu pilih ${activity} dan ${game}. Date kita resmi masuk wishlist! Tinggal pilih tanggal. ♡`
+        : `Kamu pilih ${activity} dan ${game}. Jawaban: “${reply}”.`;
+      document.getElementById('modalEmoji').textContent = reply.startsWith('GAS') ? '💗' : '🫶';
+      document.getElementById('modalTitle').textContent = reply.startsWith('GAS') ? `Yay, ${target}!` : 'Noted, pretty girl';
+      const note = document.getElementById('surpriseNote');
+      note.style.display = reply.startsWith('GAS') ? 'block' : 'none';
+      if (reply.startsWith('GAS')) {
+        makeConfetti();
+        makeLoveHearts();
+      }
+      document.getElementById('modal').classList.add('open');
+    }
+    function closeModal() { document.getElementById('modal').classList.remove('open'); }
+    function shareAnswer() {
+      const data = updatePersonalization();
+      const activity = activityNames[selectedActivity];
+      const game = selectedGame === 'easy' ? 'Easy & funny' : selectedGame === 'team' ? 'Teamwork' : 'Strategy mode';
+      const sender = data.yourName || 'aku';
+      const target = data.partnerName || 'kamu';
+      const message = `Hai ${sender}! Ini pilihanku buat date kita 🥰\nUntuk: ${target}\nJawaban: ${currentReply}\nAktivitas Hitauchi: ${activity}\nMood board game: ${game}${data.personalMessage ? '\nPesan: ' + data.personalMessage : ''}\n\nTinggal tentuin tanggal! ♡`;
+      window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank', 'noopener');
+    }
+    function makeConfetti() {
+      const colors = ['#dc8278','#d9d1ef','#e7b6aa','#b7c9ad','#f0c96b'];
+      for (let i = 0; i < 42; i++) {
+        const bit = document.createElement('i');
+        bit.className = 'confetti';
+        bit.style.left = Math.random() * 100 + 'vw';
+        bit.style.background = colors[i % colors.length];
+        bit.style.animationDelay = (Math.random() * .7) + 's';
+        bit.style.transform = `rotate(${Math.random() * 180}deg)`;
+        document.body.appendChild(bit);
+        setTimeout(() => bit.remove(), 3600);
+      }
+    }
+    function makeLoveHearts() {
+      const hearts = ['♡','♥','💗','💕'];
+      for (let i = 0; i < 16; i++) {
+        const heart = document.createElement('span');
+        heart.className = 'love-floater';
+        heart.textContent = hearts[i % hearts.length];
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDelay = (Math.random() * 1.1) + 's';
+        heart.style.color = ['#d98288','#bd9edb','#e6a5a8'][i % 3];
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 4700);
+      }
+    }
+    document.getElementById('modal').addEventListener('click', e => {
+      if (e.target.id === 'modal') closeModal();
+    });
+    loadEmbeddedPersonalization();
+  </script>
+</body>
+</html>
