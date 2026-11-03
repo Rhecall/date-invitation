@@ -199,13 +199,32 @@
     .recipient-memory img { display: block; width: min(100%, 420px); max-height: 360px; object-fit: cover; margin: 16px auto 0; border-radius: 16px; box-shadow: 0 8px 24px rgba(75,50,55,.12); }
     .recipient-memory-from { margin-top: 12px !important; font-family: Georgia,serif; font-style: italic; }
 
+  
+    /* Fixed personal invitation for Nopi */
+    #personalize { display:none !important; }
+    .shared-memory { margin-top:24px; padding:20px; border-radius:28px; background:linear-gradient(140deg,#fffaf7,#f0eafa); border:1px solid rgba(255,255,255,.92); box-shadow:var(--shadow); text-align:center; }
+    .shared-memory .memory-kicker { color:#a16f76; font-size:10px; letter-spacing:.18em; text-transform:uppercase; font-weight:900; }
+    .shared-memory h2 { margin:8px 0 6px; color:#614950; font-size:clamp(26px,5vw,36px); }
+    .shared-memory .memory-caption { margin:0 auto 16px; color:#796a78; font-size:13px; }
+    .shared-memory .memory-photo { display:block; width:min(100%,330px); max-height:430px; object-fit:cover; margin:0 auto 17px; border-radius:22px; border:5px solid rgba(255,255,255,.9); box-shadow:0 12px 30px rgba(52,34,60,.18); }
+    .shared-memory .memory-quote { max-width:540px; margin:0 auto; color:#614950; font-family:Georgia,serif; font-size:clamp(19px,4vw,25px); line-height:1.45; }
+    .shared-memory .memory-sign { margin:13px 0 0; color:#9b7180; font-family:Georgia,serif; font-style:italic; font-size:14px; }
+    @media (prefers-reduced-motion: no-preference) {
+      .shared-memory { animation: memoryReveal .75s ease both; }
+      @keyframes memoryReveal { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:translateY(0); } }
+    }
+    @media (max-width:620px) {
+      .shared-memory { padding:16px 13px; }
+      .shared-memory .memory-photo { width:min(100%,280px); }
+    }
+
   </style>
 </head>
 <body>
   <main class="page">
     <div class="topbar">
       <div class="brand"><span class="brand-mark">♡</span> little date studio</div>
-      <div class="top-pill">A DATE PROPOSAL · 01</div>
+      <div class="top-pill">MADE WITH LOVE · FOR NOPI</div>
     </div>
 
     <header class="hero" id="home">
@@ -226,6 +245,15 @@
       </div>
       <div class="hero-stamp">quality<br>time<span>♡</span>together</div>
     </header>
+
+    <section class="shared-memory" aria-label="A personal message for Nopi">
+      <div class="memory-kicker">a little memory of us ♡</div>
+      <h2>Nopi, bidadarinya aku</h2>
+      <p class="memory-caption">One of my favorite moments with you.</p>
+      <img class="memory-photo" src="./assets/nopi-couple.jpg" alt="Foto kenangan kita berdua di aquarium" width="220" height="293" loading="eager" decoding="async" />
+      <p class="memory-quote">“We Must make a beautiful moment ya sayanggku!”</p>
+      <p class="memory-sign">With love, dari aku untuk kamu ♡</p>
+    </section>
 
     <section id="personalize">
       <div class="section-head">
@@ -401,7 +429,7 @@
       </div>
     </section>
 
-    <div class="footer">made with a little thought & a lot of ♡</div>
+    <div class="footer">made for Nopi, bidadarinya aku · with a lot of ♡</div>
   </main>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -417,7 +445,7 @@
     </div>
   </div>
 
-  <script id="embedded-personalization" type="application/json">{"yourName":"","partnerName":"","personalMessage":"","photoData":""}</script>
+  <script id="embedded-personalization" type="application/json">{"yourName":"Aku","partnerName":"Nopi","personalMessage":"We Must make a beautiful moment ya sayanggku!","photoData":""}</script>
   <script>
     let selectedActivity = 'clay';
     let selectedGame = 'easy';
